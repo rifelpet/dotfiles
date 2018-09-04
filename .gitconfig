@@ -78,6 +78,25 @@
 			git commit --amend -m \"$(git log -1 --pretty=%B)\n\nCloses #$1.\"; \
 		fi \
 	}; f"
+	c = commit -am
+	fpush = push --force
+	s = status
+	sclone = clone --depth=1
+	amend = commit --amend --all
+	undocommit = reset HEAD~
+	hreset = reset --hard
+	co = checkout
+	df = diff --color --color-words --abbrev
+	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --
+	cherrypick = cherry-pick
+	cherry = cherry-pick
+	cp = cherry-pick
+
+	# Show the diff between the latest commit and the current state
+	d = !"git diff-index --quiet HEAD -- || clear; git --no-pager diff --patch-with-stat"
+
+	reup = rebase-update # depot_tools specific
+	git = !exec git
 
 [apply]
 
@@ -122,9 +141,20 @@
 [color "diff"]
 
 	meta = yellow bold
-	frag = magenta bold # line info
-	old = red # deletions
-	new = green # additions
+	commit = green bold
+	frag = magenta bold
+	old = red bold
+	new = green bold
+	whitespace = red reverse
+	newMoved = cyan
+	oldMoved = blue
+
+[color "diff-highlight"]
+
+	oldNormal = red bold
+	oldHighlight = "red bold 52"
+	newNormal = "green bold"
+	newHighlight = "green bold 22"
 
 [color "status"]
 
@@ -132,12 +162,12 @@
 	changed = green
 	untracked = cyan
 
-[commit]
-
-	# https://help.github.com/articles/signing-commits-using-gpg/
-	gpgsign = true
-
 [diff]
+	compactionHeuristic = true
+
+	# Show blocks of moved text of at least 20 alphanumeric characters differently than adds/deletes
+	# https://blog.github.com/2018-04-05-git-217-released/
+	colorMoved = zebra
 
 	# Detect copies as well as renames
 	renames = copies
@@ -152,36 +182,60 @@
 	# Automatically correct and execute mistyped commands
 	autocorrect = 1
 
+[pager]
+	# insanely beautiful diffs ==> npm install -g diff-so-fancy
+	diff = diff-so-fancy | less --tabs=4 -RFX
+	show = diff-so-fancy | less --tabs=4 -RFX
+
 [merge]
 
-	# Include summaries of merged commits in newly created merge commit messages
-	log = true
+	tool = opendiff
+	renameLimit = 0
 
+# push easily. http://stackoverflow.com/a/23918418/89484
 [push]
 
-	# https://git-scm.com/docs/git-config#git-config-pushdefault
-	default = simple
-	# Make `git push` push relevant annotated tags when pushing branches out.
+	default = current
 	followTags = true
 
-# URL shorthands
+[interactive]
+  # disabled until github.com/so-fancy/diff-so-fancy/pull/172 is resolved :(
+	# diffFilter = "diff-so-fancy"
 
+# rewrites of repo paths
 [url "git@github.com:"]
-
-	insteadOf = "gh:"
+	insteadOf = "https://github.com/"
 	pushInsteadOf = "github:"
 	pushInsteadOf = "git://github.com/"
+	pushInsteadOf = "https://github.com/"
 
 [url "git://github.com/"]
-
 	insteadOf = "github:"
 
 [url "git@gist.github.com:"]
-
-	insteadOf = "gst:"
 	pushInsteadOf = "gist:"
 	pushInsteadOf = "git://gist.github.com/"
 
 [url "git://gist.github.com/"]
-
 	insteadOf = "gist:"
+
+#[init]
+#	templatedir = ~/.git_template
+
+[filter "lfs"]
+	clean = git-lfs clean %f
+	smudge = git-lfs smudge %f
+	required = true
+
+[fetch]
+	prune = true
+
+[remote "origin"]
+	fetch = +refs/heads/*:refs/remotes/origin/*
+[stash]
+	showPatch = true
+[log]
+	date = relative
+
+[include]
+	path = ~/.gitconfig.local
