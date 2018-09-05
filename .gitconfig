@@ -125,6 +125,13 @@
 	# Speed up commands involving untracked files such as `git status`.
 	# https://git-scm.com/docs/git-update-index#_untracked_cache
 	untrackedCache = true
+	[pager]
+		# insanely beautiful diffs ==> npm install -g diff-so-fancy
+		diff = diff-so-fancy | less --tabs=4 -RFX
+		show = diff-so-fancy | less --tabs=4 -RFX
+
+[diff-so-fancy]
+        markEmptyLines = false
 
 [color]
 
@@ -181,11 +188,6 @@
 
 	# Automatically correct and execute mistyped commands
 	autocorrect = 1
-
-[pager]
-	# insanely beautiful diffs ==> npm install -g diff-so-fancy
-	diff = diff-so-fancy | less --tabs=4 -RFX
-	show = diff-so-fancy | less --tabs=4 -RFX
 
 [merge]
 
