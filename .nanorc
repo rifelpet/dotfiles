@@ -1,3 +1,4 @@
+set constantshow
 syntax "JSON" "\.json$"
 header "^\{$"
 
