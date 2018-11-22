@@ -149,3 +149,8 @@ alias reload="exec ${SHELL} -l"
 
 # Print each PATH entry on a separate line
 alias path='echo -e ${PATH//:/\\n}'
+
+
+alias k='kubectl'
+alias krp='kubectl run --restart=Never --dry-run -o yaml'
+alias kr='kubectl run --dry-run -o yaml'
